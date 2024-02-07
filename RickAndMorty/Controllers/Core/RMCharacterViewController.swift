@@ -12,9 +12,17 @@ final class RMCharacterViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         view.backgroundColor = .systemBackground
         title = "Characters"
+        
+        let requestCharacter = RMRequest(endpoint: .character, queryParameters: [URLQueryItem(name: "name", value: "rick"), URLQueryItem(name: "status", value: "alive")])
+        print(requestCharacter.url)
+        
+        RMService.shared.execute(requestCharacter, expecting: RMCharacter.self) { result in
+            switch result {
+            case .success(<#T##RMCharacter#>)
+            }
+        }
     }
     
 
