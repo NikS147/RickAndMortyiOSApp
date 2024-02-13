@@ -41,7 +41,7 @@ final class RMCharacterListView: UIView {
     }()
     
     // MARK: - Init
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
@@ -95,8 +95,8 @@ extension RMCharacterListView: RMCharacterListViewViewModelDelegate {
     }
     
     func didLoadMoreCharacters(with newIndexPaths: [IndexPath]) {
-            collectionView.performBatchUpdates {
-                self.collectionView.insertItems(at: newIndexPaths)
-            }
+        collectionView.performBatchUpdates {
+            self.collectionView.insertItems(at: newIndexPaths)
         }
     }
+}

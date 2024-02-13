@@ -12,7 +12,7 @@ final class RMCharacterCollectionViewCell: UICollectionViewCell {
     static let cellIdentifier = "RMCharacterCollectionViewCell"
     
     private let imageView: UIImageView = {
-       let imageView = UIImageView()
+        let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 8
@@ -21,7 +21,7 @@ final class RMCharacterCollectionViewCell: UICollectionViewCell {
     }()
     
     private let nameLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.textColor = .label
         label.font = .systemFont(ofSize: 18, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -29,7 +29,7 @@ final class RMCharacterCollectionViewCell: UICollectionViewCell {
     }()
     
     private let statusLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.textColor = .secondaryLabel
         label.font = .systemFont(ofSize: 16, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
