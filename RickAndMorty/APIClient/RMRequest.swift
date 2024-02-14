@@ -73,7 +73,7 @@ final class RMRequest {
         if !string.contains(Constants.baseUrl) {
             return nil
         }
-        var trimmed = string.replacingOccurrences(of: Constants.baseUrl+"/", with: "")
+        let trimmed = string.replacingOccurrences(of: Constants.baseUrl+"/", with: "")
         if trimmed.contains ("/") {
             let components = trimmed.components(separatedBy: "/")
             if !components.isEmpty {
