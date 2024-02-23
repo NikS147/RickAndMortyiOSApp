@@ -76,11 +76,6 @@ final class RMCharacterCollectionViewCell: UICollectionViewCell {
             imageView.bottomAnchor.constraint(equalTo: nameLabel.topAnchor, constant: -3)
         ])
         
-        /*
-         |  Image  |
-         |  name   |
-         |  status |
-         */
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
