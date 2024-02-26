@@ -7,17 +7,23 @@
 
 import UIKit
 
-class RMLocationTableViewCell: UITableViewCell {
+final class RMLocationTableViewCell: UITableViewCell {
+    static let cellIdentifier = "RMLocationTableViewCell"
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        contentView.backgroundColor = .secondarySystemBackground
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    
+    required init?(coder: NSCoder) {
+        fatalError()
     }
-
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+    }
+    
+    public func configure(with viewModel: RMLocationTableViewCellViewModel) {
+        
+    }
 }

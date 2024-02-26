@@ -8,7 +8,7 @@
 import UIKit
 
 /// Controller to show and search for Locations
-final class RMLocationViewController: UIViewController {
+final class RMLocationViewController: UIViewController, RMLocationViewViewModelDelegate {
     
     private let primaryView = RMLocationView()
     private let viewModel = RMLocationViewViewModel()
@@ -26,6 +26,9 @@ final class RMLocationViewController: UIViewController {
         
         addSearchButton()
         addConstraints()
+        
+        viewModel.delegate = self
+        viewModel.fetchLocations()
     }
     
     private func addSearchButton() {
@@ -46,6 +49,12 @@ final class RMLocationViewController: UIViewController {
         let vc = RMSearchViewController(config: RMSearchViewController.RMConfig(type: .location))
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    // MARK: - LocationViewModel Delegate
+    
+    func didFetchInitialLocations() {
+        primaryView.configure(with: viewModel)
     }
     
 }
