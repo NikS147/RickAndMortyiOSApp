@@ -23,6 +23,8 @@ final class RMSearchViewViewModel {
     
     private var noResultsHandler: (() -> Void)?
     
+    private var searchResultModel: Codable?
+    
     // MARK: - Init
     
     init(config: RMSearchViewController.RMConfig) {
@@ -85,7 +87,7 @@ final class RMSearchViewViewModel {
         var resultsVM: RMSearchResultViewModel?
         if let characterResults = model as? RMGetAllCharactersResponse {
             resultsVM = .characters(characterResults.results.compactMap {
-                return RMCharacterCollectionCellViewModel(
+                return RMCharacterCollectionViewCellViewModel(
                     characterName: $0.name,
                     characterStatus: $0.status,
                     characterImageUrl: URL(string: $0.image))
@@ -102,6 +104,7 @@ final class RMSearchViewViewModel {
             })
         }
         if let results = resultsVM {
+            self.searchResultModel = model
             self.searchResultHandler?(results)
         } else {
             // fallback error
@@ -125,5 +128,10 @@ final class RMSearchViewViewModel {
     
     public func registerOptionChangeBlock(_ block: @escaping ((RMSearchInputViewViewModel.DynamicOption, String)) -> Void) {
         self.optionMapUpdateBlock = block
+    }
+    
+    public func locationSearchResult(at index: Int) -> RMLocation? {
+        guard let searchModel = searchResultModel as? RMGetAllLocationsResponse else { return nil }
+        return searchModel.results[index]
     }
 }

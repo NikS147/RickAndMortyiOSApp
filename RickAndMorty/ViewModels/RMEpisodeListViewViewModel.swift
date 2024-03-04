@@ -20,7 +20,7 @@ final class RMEpisodeListViewViewModel: NSObject {
     
     private var isLoadingMoreEpisodes = false
     
-    private var borderColors: [UIColor] = [
+    public var borderColors: [UIColor] = [
         .systemBlue,
         .systemGreen,
         .systemOrange,

@@ -1,5 +1,5 @@
 //
-//  RMCharacterCollectionCellViewModel.swift
+//  RMCharacterCollectionViewCellViewModel.swift
 //  RickAndMorty
 //
 //  Created by Никита Солодков on 09.02.2024.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class RMCharacterCollectionCellViewModel: Hashable, Equatable {
+final class RMCharacterCollectionViewCellViewModel: Hashable, Equatable {
     
     public let characterName: String
     private let characterStatus: RMCharacterStatus
@@ -35,7 +35,7 @@ final class RMCharacterCollectionCellViewModel: Hashable, Equatable {
     
     // MARK: - Hashable
     
-    static func == (lhs: RMCharacterCollectionCellViewModel, rhs: RMCharacterCollectionCellViewModel) -> Bool {
+    static func == (lhs: RMCharacterCollectionViewCellViewModel, rhs: RMCharacterCollectionViewCellViewModel) -> Bool {
         return lhs.hashValue == rhs.hashValue
     }
     
