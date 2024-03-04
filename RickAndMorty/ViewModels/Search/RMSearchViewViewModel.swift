@@ -19,7 +19,9 @@ final class RMSearchViewViewModel {
     
     private var optionMapUpdateBlock: (((RMSearchInputViewViewModel.DynamicOption, String)) -> Void)?
     
-    private var searchResultHandler: ((RMSearchResultsViewModel) -> Void)?
+    private var searchResultHandler: ((RMSearchResultViewModel) -> Void)?
+    
+    private var noResultsHandler: (() -> Void)?
     
     // MARK: - Init
     
@@ -29,8 +31,12 @@ final class RMSearchViewViewModel {
     
     // MARK: - Public
     
-    public func registerSearchResultHandler(_ block: @escaping (RMSearchResultsViewModel) -> Void) {
+    public func registerSearchResultHandler(_ block: @escaping (RMSearchResultViewModel) -> Void) {
         self.searchResultHandler = block
+    }
+    
+    public func registerNoResultsHandler(_ block: @escaping () -> Void) {
+        self.noResultsHandler = block
     }
     
     public func executeSearch() {
@@ -64,18 +70,19 @@ final class RMSearchViewViewModel {
     private func makeSearchAPICall<T: Codable>(_ type: T.Type, request: RMRequest) {
         RMService.shared.execute(request, expecting: type) { [weak self] result in
             // Notify view of results, no results or error
+            
             switch result {
             case .success(let model):
-                // Episodes, characters: CollectionView; location: TableView
                 self?.processSearchResults(model: model)
-            case .failure(let failure):
-                print(String(describing: failure))
+            case .failure:
+                self?.handleNoResults()
+                break
             }
         }
     }
     
     private func processSearchResults(model: Codable) {
-        var resultsVM: RMSearchResultsViewModel?
+        var resultsVM: RMSearchResultViewModel?
         if let characterResults = model as? RMGetAllCharactersResponse {
             resultsVM = .characters(characterResults.results.compactMap {
                 return RMCharacterCollectionCellViewModel(
@@ -98,7 +105,12 @@ final class RMSearchViewViewModel {
             self.searchResultHandler?(results)
         } else {
             // fallback error
+            handleNoResults()
         }
+    }
+    
+    private func handleNoResults() {
+        noResultsHandler?()
     }
     
     public func set(query text: String) {
