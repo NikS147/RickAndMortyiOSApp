@@ -55,9 +55,9 @@ final class RMSearchView: UIView {
             self.searchInputView.update(option: tuple.0, value: tuple.1)
         }
         
-        viewModel.registerSearchResultHandler { [weak self] results in
+        viewModel.registerSearchResultHandler { [weak self] result in
             DispatchQueue.main.async {
-                self?.resultsView.configure(with: results)
+                self?.resultsView.configure(with: result)
                 self?.noResultsView.isHidden = true
                 self?.resultsView.isHidden = false
             }
@@ -81,8 +81,8 @@ final class RMSearchView: UIView {
             
             // Results view
             resultsView.topAnchor.constraint(equalTo: searchInputView.bottomAnchor),
-            resultsView.leftAnchor.constraint(equalTo: leftAnchor),
-            resultsView.rightAnchor.constraint(equalTo: rightAnchor),
+            resultsView.leftAnchor.constraint(equalTo: viewModel.config.type == .location ? safeAreaLayoutGuide.leftAnchor : leftAnchor),
+            resultsView.rightAnchor.constraint(equalTo: viewModel.config.type == .location ? safeAreaLayoutGuide.rightAnchor : rightAnchor),
             resultsView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
             // No resutls
