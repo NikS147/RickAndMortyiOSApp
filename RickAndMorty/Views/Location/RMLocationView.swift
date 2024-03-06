@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// Interface to relay location view events
 protocol RMLocationViewDelegate: AnyObject {
     func rmLocationView(_ locationView: RMLocationView, didselect location: RMLocation)
 }
@@ -91,14 +92,18 @@ class RMLocationView: UIView {
 
 }
 
+// MARK: - UITableViewDelegate
+
 extension RMLocationView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
         guard let locationModel = viewModel?.location(at: indexPath.row) else { return }
-        delegate?.rmLocationView(self, didselect: locationModel)
+        delegate?.rmLocationView(self, didselect: locationModel.location)
     }
 }
+
+// MARK: - UITableViewDataSource
 
 extension RMLocationView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -115,6 +120,8 @@ extension RMLocationView: UITableViewDataSource {
     }
 }
 
+// MARK: - UIScrollViewDelegate
+
 extension RMLocationView: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard let viewModel = viewModel,
@@ -128,10 +135,8 @@ extension RMLocationView: UIScrollViewDelegate {
             let totalScrollViewFixedHeight = scrollView.frame.size.height
             
             if offset >= (totalContentHeight - totalScrollViewFixedHeight - 120) {
-                DispatchQueue.main.async {
                     self?.showLoadingIndicator()
-                }
-                viewModel.fetchAdditionalLocations()
+                    viewModel.fetchAdditionalLocations()
             }
             t.invalidate()
         }

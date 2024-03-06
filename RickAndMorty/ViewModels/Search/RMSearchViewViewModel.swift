@@ -135,8 +135,21 @@ final class RMSearchViewViewModel {
         self.optionMapUpdateBlock = block
     }
     
+    public func characterSearchResult(at index: Int) -> RMCharacter? {
+        guard let searchModel = searchResultModel as? RMGetAllCharactersResponse,
+              index >= 0 && index < searchModel.results.count else { return nil }
+        return searchModel.results[index]
+    }
+    
     public func locationSearchResult(at index: Int) -> RMLocation? {
-        guard let searchModel = searchResultModel as? RMGetAllLocationsResponse else { return nil }
+        guard let searchModel = searchResultModel as? RMGetAllLocationsResponse,
+              index >= 0 && index < searchModel.results.count else { return nil }
+        return searchModel.results[index]
+    }
+    
+    public func episodeSearchResult(at index: Int) -> RMEpisode? {
+        guard let searchModel = searchResultModel as? RMGetAllEpisodesResponse,
+              index >= 0 && index < searchModel.results.count else { return nil }
         return searchModel.results[index]
     }
 }

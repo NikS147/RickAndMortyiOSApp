@@ -91,10 +91,10 @@ final class RMLocationViewViewModel {
         }
     }
     
-    public func location(at index: Int) -> RMLocation? {
-        guard index < locations.count, index >= 0 else { return nil }
+    public func location(at index: Int) -> RMLocationTableViewCellViewModel? {
+        guard index < cellViewModels.count, index >= 0 else { return nil }
         
-        return self.locations[index]
+        return self.cellViewModels[index]
     }
     
     public func fetchLocations() {

@@ -9,7 +9,7 @@ import Foundation
 
 struct RMLocationTableViewCellViewModel: Hashable, Equatable {
     
-    private let location: RMLocation
+    public private(set) var location: RMLocation
     
     init(location: RMLocation) {
         self.location = location

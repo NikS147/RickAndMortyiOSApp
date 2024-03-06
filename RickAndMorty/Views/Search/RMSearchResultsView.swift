@@ -8,7 +8,9 @@
 import UIKit
 
 protocol RMSearchResultsViewDelegate: AnyObject {
+    func rmSearchResultsView(_ resultsView: RMSearchResultsView, didTapCharacterAt index: Int)
     func rmSearchResultsView(_ resultsView: RMSearchResultsView, didTapLocationAt index: Int)
+    func rmSearchResultsView(_ resultsView: RMSearchResultsView, didTapEpisodeAt index: Int)
 }
 
 /// Shows search results UI (table or collection view as needed)
@@ -113,7 +115,7 @@ final class RMSearchResultsView: UIView {
             tableView.rightAnchor.constraint(equalTo: rightAnchor),
             tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-            collectionView.topAnchor.constraint(equalTo: topAnchor),
+            collectionView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
             collectionView.leftAnchor.constraint(equalTo: leftAnchor),
             collectionView.rightAnchor.constraint(equalTo: rightAnchor),
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
@@ -176,23 +178,35 @@ extension RMSearchResultsView: UICollectionViewDelegate, UICollectionViewDataSou
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        
         // Handle cell tap
+        
+        guard let viewModel = viewModel else { return }
+        
+        switch viewModel.results {
+        case .characters:
+            delegate?.rmSearchResultsView(self, didTapCharacterAt: indexPath.row)
+        case .episodes:
+            delegate?.rmSearchResultsView(self, didTapEpisodeAt: indexPath.row)
+        case .locations:
+            break
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let currentViewModel = collectionViewCellViewModels[indexPath.row]
         
+        let bounds = collectionView.bounds
+        
         if currentViewModel is RMCharacterCollectionViewCellViewModel {
             // Character size
             let bounds = UIScreen.main.bounds
-            let width = (bounds.width - 30) / 2
-            return CGSize(width: width, height: width * 1.5)
+            let width = UIDevice.isIphone ? (bounds.width - 30) / 2 : (bounds.width - 50) / 4
+            return CGSize(width: width,
+                          height: width * 1.5)
         }
         
         // Episode
-        let bounds = UIScreen.main.bounds
-        let width = bounds.width - 20
+        let width = UIDevice.isIphone ? bounds.width - 20 : (bounds.width - 30) / 2
         return CGSize(width: width, height: 100)
     }
     
@@ -237,21 +251,25 @@ extension RMSearchResultsView: UIScrollViewDelegate {
             
             if offset >= (totalContentHeight - totalScrollViewFixedHeight - 120) {
                 viewModel.fetchAdditionalResults { [weak self] newResults in
-                    // Refresh table
-                    self?.tableView.tableFooterView = nil
-                    self?.collectionViewCellViewModels = newResults
-                    
-                    print("Should add more result cells for search results: \(newResults.count)")
+                    guard let strongSelf = self else { return }
+                    DispatchQueue.main.async {
+                        strongSelf.tableView.tableFooterView = nil
+                        
+                        let originalCount = strongSelf.collectionViewCellViewModels.count
+                        let newCount = (newResults.count - originalCount)
+                        let total = originalCount + newCount
+                        let startingIndex = total - newCount
+                        let indexPathsToAdd = Array(startingIndex..<(startingIndex + newCount)).compactMap({
+                            return IndexPath(row: $0, section: 0)
+                        })                       
+                        strongSelf.collectionViewCellViewModels = newResults
+                        strongSelf.collectionView.insertItems(at: indexPathsToAdd)
+                    }
                 }
             }
             t.invalidate()
         }
     }
-    
-//    private func showCollectionLoadingIndicator() {
-//        let footer = RMTableLoadingFooterView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: 100))
-//        tableView.tableFooterView = footer
-//    }
     
     private func handleLocationPagination(scrollView: UIScrollView) {
         guard let viewModel = viewModel,
